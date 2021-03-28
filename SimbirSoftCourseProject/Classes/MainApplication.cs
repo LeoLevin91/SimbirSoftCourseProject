@@ -7,6 +7,12 @@
     public class MainApplication
     {
         public DownloadWebPage downloadWebPage { get; set; } = new DownloadWebPage();
-        public CounterWord counterWord { get; set; } = new CounterWord();
+        //public CounterWord counterWord { get; set; } = new CounterWord();
+
+        public void Start()
+        {
+            // downloadWebPage.urlAddress = "http://www.contoso.com/";
+            // downloadWebPage.settingUpConnection();
+        }
     }
 }

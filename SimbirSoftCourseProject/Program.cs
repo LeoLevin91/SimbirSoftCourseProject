@@ -1,12 +1,16 @@
 using System;
+using System.Threading.Tasks;
+using SimbirSoftCourseProject.Classes;
 
 namespace SimbirSoftCourseProject
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            DownloadWebPage downloadWebPage= new DownloadWebPage();
+            downloadWebPage.urlAddress = "http://www.contoso.com/";
+            await downloadWebPage.settingUpConnection();
         }
     }
 }
