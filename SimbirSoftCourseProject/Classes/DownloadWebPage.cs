@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Net;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -12,48 +12,79 @@ namespace SimbirSoftCourseProject.Classes
      */
     public class DownloadWebPage
     {
-        // TODO Удалить переменную <urlAdress> и передавать url в конструкторе
-        public string urlAddress { get; set; }
+        public string urlAddress { get;}
+        public string fileName { get; set; }
         
-        public string GET_METHOD { get; set; } = "GET";
-        public int ConnectTime { get;} = 12000;
 
         private HttpClient httpClient= new HttpClient();
         
-
         /*
-         * Данный метод предназначается для установления соединения с сайтом
+         * Конструктор (string URL, string fileName)
          */
-        public async Task settingUpConnection()
+        public DownloadWebPage(string urlAddress, string fileName)
         {
-            
-            // Пытаемся установить соединение
-            HttpResponseMessage result = await httpClient.GetAsync(urlAddress);
-            if (result.ReasonPhrase == "OK")
-            {
-                // Выводим страницу на экран
-                string gettedHTML = await httpClient.GetStringAsync(urlAddress);
-                Console.WriteLine(gettedHTML);
-            }
-            else
-            {
-                Console.WriteLine("There was a problem!");
-            }
-            // Получаем HTML страницу
-            //var content = await httpClient.GetStringAsync(urlAddress);
-            // Получим header
-            // var header = await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, urlAddress));
-            // Console.WriteLine(result.StatusCode);
-            // //Console.WriteLine(content);
-            // Console.WriteLine(header);
-
-
-            // TODO Получение HTML кода страницы
-            // WebClient client = new WebClient();
-            // string htmlCode = client.DownloadString(urlAddress);
-            // Console.WriteLine(htmlCode);
-            
+            this.urlAddress = urlAddress;
+            this.fileName = fileName;
         }
 
+        /*
+         * Данный метод предназначается для установления соединения с сервером
+         */
+        public async Task SaveHTML()
+        {
+            try
+            {
+                HttpResponseMessage result = await httpClient.GetAsync(urlAddress);
+
+                if (result.IsSuccessStatusCode)
+                {
+                    try
+                    {
+                        using (StreamWriter streamWriter = new StreamWriter($@"../../../SavePages/{fileName}.txt"))
+                        {
+                            string gettedHTML = await httpClient.GetStringAsync(urlAddress);
+                            streamWriter.WriteLine(gettedHTML);
+                        }
+                    }
+                    catch (IOException e)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(e.Message);
+                        Console.WriteLine(e.StackTrace);
+                    }
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Status Code Server Ansver: {result.StatusCode}");
+                    Console.WriteLine("Не удалось подключится к серверу");
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{urlAddress}: должен быть абсолютным URL или необходимо задать BaseAddress");
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+
+            }
+            catch (HttpRequestException e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(
+                    $"Не удалось выполнить запрос из-за ключевой проблемы, например подключения к сети, " +
+                    $"ошибки DNS, проверки сертификата сервера или времени ожидания.");
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+
+            }
+            catch (TaskCanceledException e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Не удалось выполнить запрос из-за истечения времени ожидания.");
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
+        }
     }
 }

@@ -6,7 +6,7 @@
      */
     public class MainApplication
     {
-        public DownloadWebPage downloadWebPage { get; set; } = new DownloadWebPage();
+        //public DownloadWebPage downloadWebPage { get; set; } = new DownloadWebPage();
         //public CounterWord counterWord { get; set; } = new CounterWord();
 
         public void Start()
