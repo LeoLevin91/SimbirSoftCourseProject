@@ -27,10 +27,27 @@ namespace SimbirSoftCourseProject.Classes
             this.fileName = fileName;
         }
 
+        public DownloadWebPage(string urlAddress)
+        {
+            this.urlAddress = urlAddress;
+            this.fileName = getFilenameFromURL(this.urlAddress);
+        }
+
+        /*
+         * Данный метод предназначается для извлечения названия сайта из URL
+         * TODO позже удалить или доделать
+         * Проблема: Не все сайты имеют одинаковый формат url
+         */
+        private string getFilenameFromURL(string urlString)
+        {
+            Console.WriteLine(urlString.Split('.')[1]);
+            return urlString.Split('.')[1];
+        }
+
         /*
          * Данный метод предназначается для установления соединения с сервером
          */
-        public async Task SaveHTML()
+        public async Task GetHTML()
         {
             try
             {
@@ -40,11 +57,7 @@ namespace SimbirSoftCourseProject.Classes
                 {
                     try
                     {
-                        using (StreamWriter streamWriter = new StreamWriter($@"../../../SavePages/{fileName}.txt"))
-                        {
-                            string gettedHTML = await httpClient.GetStringAsync(urlAddress);
-                            streamWriter.WriteLine(gettedHTML);
-                        }
+                        await SaveHTML();
                     }
                     catch (IOException e)
                     {
@@ -84,6 +97,18 @@ namespace SimbirSoftCourseProject.Classes
                 Console.WriteLine("Не удалось выполнить запрос из-за истечения времени ожидания.");
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
+            }
+        }
+        
+        /*
+         * Данный метод предназначается для сохраненияHTML в файл
+         */
+        private async Task SaveHTML()
+        {
+            using (StreamWriter streamWriter = new StreamWriter($@"../../../SavePages/{this.fileName}.txt"))
+            {
+                string gettedHTML = await httpClient.GetStringAsync(urlAddress);
+                streamWriter.WriteLine(gettedHTML);
             }
         }
     }

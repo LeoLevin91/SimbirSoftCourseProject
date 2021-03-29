@@ -8,8 +8,8 @@ namespace SimbirSoftCourseProject
     {
         static async Task Main(string[] args)
         {
-            DownloadWebPage downloadWebPage= new DownloadWebPage("https://github.com/", "GitHubHtml");
-            await downloadWebPage.SaveHTML();
+            DownloadWebPage downloadWebPage= new DownloadWebPage("https://www.simbirsoft.com/");
+            await downloadWebPage.GetHTML();
         }
     }
 }
