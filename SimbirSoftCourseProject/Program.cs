@@ -8,10 +8,10 @@ namespace SimbirSoftCourseProject
     {
         static async Task Main(string[] args)
         {
-            DownloadWebPage downloadWebPage= new DownloadWebPage("https://www.thetimes.co.uk/", "thetimes");
+            DownloadWebPage downloadWebPage= new DownloadWebPage("https://animego.org/", "animego");
             await downloadWebPage.GetHTML();
             
-            CounterWord counterWord = new CounterWord($@"../../../SavePages/thetimes.txt");
+            CounterWord counterWord = new CounterWord($@"../../../SavePages/animego.txt");
             counterWord.ParseHTML();
         }
     }
